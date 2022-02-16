@@ -93,19 +93,23 @@ module Enumerable
     new_array
   end
 
+  def my_inject
+    accumulator = 1
+    for v in self
+      accumulator = yield accumulator, v
+    end
+    accumulator
+  end
 end
 
-puts "my_map vs map"
-numbers = [1,2,3,4,5]
-p numbers.my_map {|value| value}
-p numbers.map {|value| value}
-p numbers.my_map {|value| value if value %2 == 0}
-p numbers.map {|value| value if value %2 == 0}
-p numbers.my_map
-p numbers.map 
-my_proc = Proc.new {|value|value}
-p numbers.my_map(my_proc)
-my_proc = Proc.new {|value| value if value %2 == 0}
-p numbers.my_map(my_proc)
-puts "\n\n"
+puts "my_inject vs inject"
+numbers = [7,78,3,6,305]
+p numbers.shuffle.my_inject {|sum, n| sum*n } 
+p numbers.shuffle.inject {|sum, n| sum*n}
+
+def multiply_els arr
+  arr.my_inject {|sum, n| sum*n}
+end
+
+p multiply_els([2,4,5])
 
