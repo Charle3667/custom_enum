@@ -61,20 +61,51 @@ module Enumerable
     end
     bool
   end
+
+  def my_count(x = nil)
+    total = 0
+    for v in self 
+      if x != nil
+        total += 1 if v == x
+      elsif block_given?
+        total += 1 if yield v
+      else
+        total += 1
+      end
+    end
+    total
+  end
+
+  def my_map(procc = nil)
+
+    new_array = Array.new
+    if block_given?
+      for v in self
+        new_array.push(yield v)
+      end
+    elsif procc != nil
+      for v in self
+        new_array.push(procc.call(v))
+      end
+    else
+      return to_enum(:my_each_with_index)
+    end
+    new_array
+  end
+
 end
 
-puts "my_none? vs none?"
+puts "my_map vs map"
 numbers = [1,2,3,4,5]
-wrong_numbers = [1,3,5,7,9]
-p numbers.my_none? {|value| value %2 == 0}
-p numbers.none? {|value| value %2 == 0}
-p wrong_numbers.my_none? {|value| value %2 == 0}
-p wrong_numbers.none? {|value| value %2 == 0}
-p [].my_none?
-p [].none?
-p [nil, true].my_none?
-p [nil, true].none?
-p [].my_none?(Float)
-p [].none?(Float)
+p numbers.my_map {|value| value}
+p numbers.map {|value| value}
+p numbers.my_map {|value| value if value %2 == 0}
+p numbers.map {|value| value if value %2 == 0}
+p numbers.my_map
+p numbers.map 
+my_proc = Proc.new {|value|value}
+p numbers.my_map(my_proc)
+my_proc = Proc.new {|value| value if value %2 == 0}
+p numbers.my_map(my_proc)
 puts "\n\n"
 
